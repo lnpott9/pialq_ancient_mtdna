@@ -1,2 +1,5 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+
+# set figures folder to R
+07_paper_figures/*.R linguist-detectable=true
