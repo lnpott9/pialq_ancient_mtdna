@@ -1,8 +1,11 @@
-save heatmap code:
+# =============================================================================
+# Title: fig_3.R
+# Author: Laura N. Pott
+# Date: 2026-06-02
+# Description: R script to create figure of geographical affinity based on network & phylogenetic analyses
+# Usage: run interactively in RStudio IDE
+# =============================================================================
 
-tidy_geography.r
-
-```
 # Load libraries
 library(ComplexHeatmap)
 library(tidyr)
@@ -37,7 +40,7 @@ data <- raw_data %>%
     country == "Catoctin Furnace" ~ "Catoctin Furnace: 1700-1800s",
     TRUE ~ country
   ))
- 
+
 unique(data$country)
 
 # 3. Define countries and their specific regions
@@ -82,7 +85,7 @@ region_lookup <- c(
 
 country_order <- names(region_lookup)
 
-# 3. Collapse multiple types per individual-country pair
+# 4. Collapse multiple types per individual-country pair
 collapsed_data <- data %>%
   group_by(individual, country) %>%
   summarise(
@@ -94,20 +97,20 @@ collapsed_data <- data %>%
     .groups = "drop"
   )
 
-# 4. Process into wide matrix (values = type string)
+# 5. Process into wide matrix (values = type string)
 processed_data <- collapsed_data %>%
   mutate(country = factor(country, levels = country_order)) %>%
   arrange(country) %>%
   pivot_wider(names_from = country, values_from = type, values_fill = NA) %>%
   column_to_rownames("individual")
 
-# Reorder columns to match country_order (only keep countries present in data)
+# 6. Reorder columns to match country_order (only keep countries present in data)
 col_order <- intersect(country_order, colnames(processed_data))
 processed_data <- processed_data[, col_order]
 
 heatmap_matrix <- as.matrix(processed_data)
 
-# Keep only individuals present in the data, in my specified order
+# 7. Keep only individuals present in the data, in a specified order based on haplogroup
 individual_order <- c(
   "LQ28",
   "LQ61",
@@ -173,10 +176,10 @@ individual_order <- c(
 row_order <- intersect(individual_order, rownames(heatmap_matrix))
 heatmap_matrix <- heatmap_matrix[row_order, ]
 
-# 5. Create Region vector aligned with matrix columns
+# 8. Create region vector aligned with matrix columns
 column_groups <- region_lookup[colnames(heatmap_matrix)]
 
-# 6. Define colors for regions
+# 9. Define colors for regions
 region_colors <- c(
   "North America" = "#4e148c",
   "Caribbean" = "#990066",
@@ -190,7 +193,7 @@ region_colors <- c(
   "historical diaspora" = "#a50104"
 )
 
-# 7. Create column annotation
+# 10. Create column annotation
 col_ann <- HeatmapAnnotation(
   Region = column_groups,
   col = list(Region = region_colors),
@@ -198,7 +201,7 @@ col_ann <- HeatmapAnnotation(
   show_legend = FALSE
 )
 
-# 8. Cell function: fill by region color, label by type
+# 11. Cell function: fill by region color, label by type
 col_fun <- function(j, i, x, y, w, h, fill) {
   current_region <- column_groups[j]
   val <- heatmap_matrix[i, j]
@@ -219,17 +222,16 @@ col_fun <- function(j, i, x, y, w, h, fill) {
   }
 }
 
-# 9. Extract haplogroup labels aligned to matrix rows
-# 9. Extract haplogroup labels aligned to matrix rows
+# 12. Extract haplogroup labels aligned to matrix rows
 row_labels <- data %>%
   select(individual, haplogroup) %>%
   distinct() %>%
   mutate(haplogroup = substr(haplogroup, 1, 2)) %>%
   filter(individual %in% rownames(heatmap_matrix)) %>%
-  deframe() %>%                                    # named vector: individual -> haplogroup
-  .[rownames(heatmap_matrix)]                      # index by matrix row order directly
+  deframe() %>%                    
+  .[rownames(heatmap_matrix)]
 
-# 10. Build type legend
+# 13. Build type legend
 type_legend <- Legend(
   labels = c("Network", "Tree", "Both"),
   title = "Type",
@@ -252,7 +254,7 @@ type_legend <- Legend(
   )
 )
 
-# 11. Generate the Heatmap
+# 14. Generate heatmap
 row_ann_right <- rowAnnotation(
   Individual = anno_text(rownames(heatmap_matrix), 
                          gp = gpar(fontsize = 8))
@@ -288,13 +290,10 @@ ht <- Heatmap(heatmap_matrix,
               column_names_rot = 45
 )
 
-# 12. Draw heatmap with type legend
+# 15. Draw heatmap with type legend
 pdf("test.pdf", width = 14, height = 10)
 draw(ht, annotation_legend_list = list(type_legend))
 dev.off()
 
 
-
-
-```
 
