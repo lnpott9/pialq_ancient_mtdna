@@ -6,6 +6,7 @@
 # Usage: commands entered manually
 # =============================================================================
 
+cd $SHARED/projects/PIALQ/2025_ancient_lp/02_circmap/results/genotyping
 module load bcftools/1.16-gcc-8.2.0-5d4xg4y
 
 # 1. index vcf files
