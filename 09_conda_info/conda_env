@@ -1,7 +1,0 @@
-# All conda environments used in paper 
-
-# environment for multi-sequence alignment (msa_env) + yaml creation
-module load miniforge
-conda create --copy -p $SHARED/projects/PIALQ/2025_ancient_lp/09_msa/msa_env python numpy pandas biopython seaborn matplotlib -c conda-forge -c bioconda
-source activate /projects/standard/mnievesc/shared/projects/PIALQ/2025_ancient_lp/09_msa/msa_env
-conda env export > msa_env.yml
