@@ -1,3 +1,5 @@
+#!/bin/bash -l
+
 # =============================================================================
 # Title: 2b_nopred_dsdna.sh
 # Author: Laura N. Pott
@@ -6,8 +8,6 @@
 # Usage: sbatch 2b_nopred_dsdna.sh
 # =============================================================================
 
-
-#!/bin/bash -l
 #SBATCH --time=20:00:00
 #SBATCH --ntasks=1
 #SBATCH --mem=20g

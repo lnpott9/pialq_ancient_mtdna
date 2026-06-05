@@ -1,3 +1,5 @@
+#!/bin/bash -l
+
 # =============================================================================
 # Title: 1c_circular_mapper.sh
 # Author: Laura N. Pott
@@ -6,7 +8,6 @@
 # Usage: sbatch 1c_circular_mapper.sh
 # =============================================================================
 
-#!/bin/bash -l
 #SBATCH --time=40:00:00
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=20

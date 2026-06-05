@@ -1,3 +1,5 @@
+#!/bin/bash -l
+
 # =============================================================================
 # Title: 1b_filter.sh
 # Author: Laura N. Pott
@@ -6,7 +8,6 @@
 # Usage: sbatch 1b_filter.sh
 # =============================================================================
 
-#!/bin/bash -l
 #SBATCH --time=06:00:00
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=5

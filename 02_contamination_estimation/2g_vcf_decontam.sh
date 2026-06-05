@@ -1,3 +1,5 @@
+#!/bin/bash -l
+
 # =============================================================================
 # Title: 2g_vcf_decontam.sh
 # Author: Laura N. Pott
@@ -6,7 +8,6 @@
 # Usage: sbatch 2g_vcf_decontam.sh
 # =============================================================================
 
-#!/bin/bash -l
 #SBATCH --time=10:00:00
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=20

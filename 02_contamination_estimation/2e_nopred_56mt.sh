@@ -1,3 +1,5 @@
+#!/bin/bash -l
+
 # =============================================================================
 # Title: 2e_nopred_56mt.sh
 # Author: Laura N. Pott
@@ -6,7 +8,6 @@
 # Usage: sbatch 2e_nopred_56mt.sh
 # =============================================================================
 
-#!/bin/bash -l
 #SBATCH --time=10:00:00
 #SBATCH --ntasks=1
 #SBATCH --mem=10g

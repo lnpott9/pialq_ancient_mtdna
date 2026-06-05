@@ -1,3 +1,5 @@
+#!/bin/bash -l
+
 # =============================================================================
 # Title: 2c_pred_dsdna.sh
 # Author: Laura N. Pott
@@ -7,7 +9,6 @@
 # Usage: sbatch 2c_pred_dsdna.sh
 # =============================================================================
 
-#!/bin/bash -l
 #SBATCH --time=20:00:00
 #SBATCH --ntasks=1
 #SBATCH --mem=20g
