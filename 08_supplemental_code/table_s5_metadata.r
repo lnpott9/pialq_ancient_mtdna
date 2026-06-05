@@ -1,21 +1,26 @@
-metadata supplemental file
+# =============================================================================
+# Title: table_s5_metadata.r
+# Author: Laura N. Pott
+# Date: 2026-06-05
+# Description: R script to create Supplemental Table S5
+# Usage: run interactively in RStudio IDE
+# =============================================================================
 
-```
-# set wd
+# 1. set wd
 setwd("/projects/standard/mnievesc/shared/projects/PIALQ/2025_ancient_lp/09_msa")
 library(dplyr)
 
-# getting all papers
+# 2. getting all papers
 tree <- read.csv("/projects/standard/mnievesc/shared/projects/PIALQ/2025_ancient_lp/09_msa/03_iqtree/iqtree.meta", sep = "\t")
 network <- read.csv("/projects/standard/mnievesc/shared/projects/PIALQ/2025_ancient_lp/09_msa/04_mjn/mjn.meta", sep = "\t")
 diversity <- read.csv("/projects/standard/mnievesc/shared/projects/PIALQ/2025_ancient_lp/12_diversity/diversity.meta", sep = "\t")
 
-# bind together
+# 3. bind together
 all_meta <- bind_rows(tree, network, diversity)
 all_meta <- unique(all_meta)
 meta <- all_meta[!(all_meta$file %in% c("AM948965.fasta")), ]
 
-# summarize using dplyr
+# 4. summarize using dplyr
 all_summary <- meta %>%
   group_by(ancient_or_modern, paper, country, hap_2char) %>%
   summarize(.groups = "keep") %>%
@@ -36,13 +41,13 @@ diversity_summary <- diversity %>%
   summarize(.groups = "keep") %>%
   count()
 
-# save separate summaries
+# 5. save separate summaries
 write.table(all_summary, file = "/projects/standard/mnievesc/shared/projects/PIALQ/2025_ancient_lp/09_msa/summ_all.txt", quote = FALSE, sep = "\t", col.names = TRUE)
 write.table(tree_summary, file = "/projects/standard/mnievesc/shared/projects/PIALQ/2025_ancient_lp/09_msa/summ_tree.txt", quote = FALSE, sep = "\t", col.names = TRUE)
 write.table(network_summary, file = "/projects/standard/mnievesc/shared/projects/PIALQ/2025_ancient_lp/09_msa/summ_network.txt", quote = FALSE, sep = "\t", col.names = TRUE)
 write.table(diversity_summary, file = "/projects/standard/mnievesc/shared/projects/PIALQ/2025_ancient_lp/12_diversity/summ_diversity.txt", quote = FALSE, sep = "\t", col.names = TRUE)
 
-# iff accesion is in tree, add columns that says yes
+# 6. iff accesion is in tree, add columns that says yes
 # if accession is in network, add column that says yes
 # if accession is in diversity, add column that says yes
 meta <- meta %>%
@@ -55,7 +60,7 @@ meta <- meta %>%
 # get DOIs
 unique(meta$paper)
 
-# create mapping for new column of doi
+# 7. create mapping for new column of doi
 doi <- c(
     "arencibia_2023" = "10.1002/ajpa.24822",
     "bodner_2012" = "10.1101/gr.131722.111",
@@ -120,20 +125,17 @@ doi <- c(
     "costa_2009" = "10.1016/j.mad.2008.12.001"
 )
 
-# join based on paper name
+# 8. join based on paper name
 meta$doi <- doi[meta$paper]
 sum(is.na(meta$doi))
 
 # find missing w/ unique(meta$paper[is.na(meta$doi)])
 
-# output large text file with accession number, paper, Haplogroup, country, extra_info, and doi
+# 9. output large text file with accession number, paper, Haplogroup, country, extra_info, and doi
 final <- meta %>%
   select(Sample, paper, doi, ancient_or_modern, original_format, country, extra_info, 
          Haplogroup, Quality, hap_2char, used_in_trees, used_in_network,
          used_in_comparative_analyses)
 
-# write out table to final metadata file
+# 10. write out table to final metadata file
 write.table(final, file = "/projects/standard/mnievesc/shared/projects/PIALQ/2025_ancient_lp/09_msa/supplemental_metadata.txt", quote = FALSE, sep = "\t", col.names = TRUE)
-
-```
-

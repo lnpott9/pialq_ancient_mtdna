@@ -17,7 +17,26 @@ library(ggplot2)
 # read in coordinates
 mds_data <- read.table("all_mds_coordinates.txt", header = TRUE)
 
-# 4. add regions
+# MDS plot
+ggplot(mds_data, aes(x = MDS1, y = MDS2, label = Population)) +
+  geom_point(size = 1) +
+  geom_text(vjust = -0.5, hjust = 0.5, size = 3) +
+  theme_bw() +
+  labs(title = "MDS Plot",
+       x = "MDS1",
+       y = "MDS2")
+
+# avoid overlaps
+library(ggrepel)
+ggplot(mds_data, aes(x = MDS1, y = MDS2, label = Population)) +
+  geom_point(size = 1, color = "black") +
+  geom_text_repel(size = 1, max.overlaps=Inf) +
+  theme_bw() +
+  labs(x = "MDS1",
+       y = "MDS2")
+
+# plot colored by region
+# create new column for regions
 unique(mds_data$Population)
 
 # Create a mapping of populations to regions
@@ -95,7 +114,15 @@ region_mapping <- c(
 mds_data <- mds_data %>%
   mutate(region = region_mapping[Population])
 
-# 5. set colors and shapes for each region
+# plot colored by region
+ggplot(mds_data, aes(x = MDS1, y = MDS2, color = region)) +
+  geom_point(size = 2, alpha = 1) +
+  theme_bw() +
+  labs(title = "MDS Plot by Region",
+       x = "MDS1",
+       y = "MDS2")
+
+# custom colors & shapes
 custom_colors <- c(
   "Africa" = "#006400",
   "Americas" = "#800080",
@@ -116,8 +143,118 @@ custom_shapes <- c(
   "THIS STUDY: Hacienda La Quebrada" = 4
 )
 
+# size points by sample size
+size_mapping <- c(
+  "acb" = 98,
+  "asw" = 66,
+  "beb" = 104,
+  "cdx" = 107,
+  "ceu" = 101,
+  "chb" = 105,
+  "chs" = 112,
+  "clm" = 103,
+  "esn" = 111,
+  "fin" = 105,
+  "gbr" = 106,
+  "gih" = 109,
+  "gwd" = 120,
+  "ibs" = 108,
+  "itu" = 112,
+  "jpt" = 105,
+  "khv" = 103,
+  "lwk" = 112,
+  "msl" = 98,
+  "mxl" = 70,
+  "pel" = 90,
+  "pjl" = 108,
+  "pur" = 107,
+  "stu" = 111,
+  "tsi" = 111,
+  "yri" = 109,
+  "mozabite_hgdp" = 26,
+  "arias_2017_colombia" = 436,
+  "avila_2019_brazil" = 96,
+  "barbieri_2012a_burkinafaso" = 291,
+  "barbieri_2012b_zambia" = 169,
+  "barbieri_2013_botswana" = 306,
+  "barbieri_2013_namibia" = 141,
+  "barbieri_2014a_zambia" = 446,
+  "barbieri_2014a_angola" = 170,
+  "barbieri_2014b_botswana" = 74,
+  "barbieri_2014b_namibia" = 117,
+  "bodner_2022_italy" = 216,
+  "brandini_2018_ecuador" = 208,
+  "brucato_2018_kenya" = 228,
+  "brucato_2018_comoros" = 48,
+  "chan_2019_southafrica" = 121,
+  "chan_2019_namibia" = 77,
+  "colombo_2025_algeria" = 49,
+  "colombo_2025_chad" = 65,
+  "colombo_2025_libya" = 60,
+  "colombo_2025_tunisia" = 34,
+  "fleskes_2023_anson" = 22,
+  "garcia_2021_argentina" = 114,
+  "garciaolivares_2023_canaryislands" = 896,
+  "harney_2023_catoctin" = 22,
+  "huber_2025_peru" = 143,
+  "just_2008_usa" = 265,
+  "just_2015_usa" = 588,
+  "kumar_2011_usa" = 215,
+  "mccrow_2016_southafrica" = 87,
+  "oliveira_2018_angola" = 295,
+  "olivieri_2017_italy" = 2157,
+  "pialq_peru" = 58,
+  "pierron_2017_madagascar" = 2849,
+  "sandovalvelasco_2023_sthelena" = 19,
+  "silva_2021_spain" = 1023,
+  "silva_2021_portugal" = 103,
+  "taylor_2020_usa" = 1327,
+  "tito_unpub_peru" = 189,
+  "tribaldos_2021_panama" = 84
+)
 
-# 6. fix legend order
+# add sample size
+mds_data <- mds_data %>%
+  mutate(n = size_mapping[Population])
+
+ggplot(mds_data, aes(x = MDS1, y = MDS2, color = region, shape = region)) +
+  geom_point(size = 2, alpha = 0.9) +
+  scale_color_manual(values = custom_colors) +
+  scale_shape_manual(values = custom_shapes) +
+  theme_bw() +
+  labs(x = "MDS1",
+       y = "MDS2")
+
+# replot
+simple <- ggplot(mds_data, aes(x = MDS1, y = MDS2, color = region, shape = region, size = n, label = Population)) +
+  geom_point(alpha = 0.9) +
+  scale_color_manual(values = custom_colors) +
+  scale_shape_manual(values = custom_shapes) +
+  theme_bw() +
+  labs(x = "MDS1 (61.9% of variance)",
+       y = "MDS2 (17.9% of variance)",
+       color = "Continent", 
+       shape = "Continent")
+
+
+# w text labels --> don't like this, very crazy
+final <- simple +
+  geom_text_repel(
+    size = 3,
+    show.legend = FALSE,
+    max.overlaps = Inf,
+    min.segment.length = 0,
+    segment.size = 0.2,
+    segment.alpha = 0.7,
+    box.padding = 0.5,
+    point.padding = 0.5,
+    force = 3,
+    force_pull = 0.2,
+    seed = 42
+  )
+
+# clean up
+# fix legend order
 region_order <- c(
   "Africa",
   "Americas", 
@@ -130,7 +267,7 @@ region_order <- c(
 
 mds_data$region <- factor(mds_data$region, levels = region_order)
 
-# 7. label only a few reference pops (ones closest to PIALQ)
+# label only a few reference pops
 label_pops <- c("acb", "asw", "yri", "gwd", "msl", "esn", "lwk", "pel",
                 "tito_unpub_peru", "huber_2025_peru",
                 "barbieri_2014b_namibia", "colombo_2025_chad", "brucato_2018_comoros",
@@ -162,49 +299,47 @@ label_map <- c(
 mds_data <- mds_data %>%
   mutate(label_wrapped = label_map[Population])
 
-# 8. final plot
 final <- ggplot(mds_data, 
                 aes(x = MDS1, y = MDS2, 
                     color = region, shape = region,
                     size = n, label = label_wrapped)) +
-  geom_point(alpha = 0.9) +
-  geom_text_repel(
-    data = subset(mds_data, Population %in% label_pops),
-    segment.color = "black",
-    size = 3,
-    direction = "both",
-    show.legend = FALSE,
-    max.overlaps = Inf,
-    min.segment.length = 0,
-    segment.size = 0.15,
-    segment.alpha = 1,
-    box.padding = 0.4,
-    point.padding = 0.01,
-    force = 10,
-    seed = 42
-  ) +
-  scale_color_manual(values = custom_colors, breaks = region_order) +
-  scale_shape_manual(values = custom_shapes, breaks = region_order) +
-  scale_size_continuous(range = c(1, 5), guide = "legend") +
-  theme_bw() +
-  theme(
-    legend.title = element_text(size = 16, face = "bold"),
-    legend.text = element_text(size = 14),
-    legend.key.size = unit(0.4, "cm"),
-    axis.title = element_text(size = 16),
-    axis.text = element_text(size = 14),
-    panel.grid.minor = element_blank()
-  ) +
-  labs(
-    x = "MDS1 (61.9% of variance)",
-    y = "MDS2 (17.9% of variance)",
-    color = "Continent",
-    shape = "Continent",
-    size = "Paper Sample Size"
-  )
+                geom_point(alpha = 0.9) +
+                geom_text_repel(
+                  data = subset(mds_data, Population %in% label_pops),
+                  segment.color = "black",
+                  size = 3,
+                  direction = "both",
+                  show.legend = FALSE,
+                  max.overlaps = Inf,
+                  min.segment.length = 0,
+                  segment.size = 0.15,
+                  segment.alpha = 1,
+                  box.padding = 0.4,
+                  point.padding = 0.01,
+                  force = 10,
+                  seed = 42
+                ) +
+                scale_color_manual(values = custom_colors, breaks = region_order) +
+                scale_shape_manual(values = custom_shapes, breaks = region_order) +
+                scale_size_continuous(range = c(1, 5), guide = "legend") +
+                theme_bw() +
+                theme(
+                  legend.title = element_text(size = 16, face = "bold"),
+                  legend.text = element_text(size = 14),
+                  legend.key.size = unit(0.4, "cm"),
+                  axis.title = element_text(size = 16),
+                  axis.text = element_text(size = 14),
+                  panel.grid.minor = element_blank()
+                ) +
+                labs(
+                  x = "MDS1 (61.9% of variance)",
+                  y = "MDS2 (17.9% of variance)",
+                  color = "Continent",
+                  shape = "Continent",
+                  size = "Paper Sample Size"
+                )
 
-# 9. save final mds plot
+# save final mds plot
 pdf("/projects/standard/mnievesc/shared/projects/PIALQ/2025_ancient_lp/12_diversity/mds_paper.pdf", width = 11, height = 8)
 final
 dev.off()
-

@@ -294,6 +294,3 @@ ht <- Heatmap(heatmap_matrix,
 pdf("test.pdf", width = 14, height = 10)
 draw(ht, annotation_legend_list = list(type_legend))
 dev.off()
-
-
-

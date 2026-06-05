@@ -12,5 +12,10 @@ conda create --copy -p $SHARED/projects/PIALQ/2025_ancient_lp/10_iqtree/tree_env
 source activate $SHARED/projects/PIALQ/2025_ancient_lp/10_iqtree/tree_env
 conda env export > tree_env.yml
 
-# 3. 
+# 3. create environment for running interpopulation pop gen analyses
+conda create --copy -p $SHARED/projects/PIALQ/2025_ancient_lp/12_diversity/st_env r-base=4.3 r-ape r-pegas r-hierfstat r-codetools -c conda-forge -c bioconda
+source activate /projects/standard/mnievesc/shared/projects/PIALQ/2025_ancient_lp/12_diversity/st_env
+R --vanilla
+install.packages("haplotypes")
+conda env export > st_env.yml
 
