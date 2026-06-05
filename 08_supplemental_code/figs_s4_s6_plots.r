@@ -10,7 +10,7 @@
 library(ggplot2)
 
 # 2. setwd
-setwd("/users/9/pott0195/01_chapter1/figures/02_seqstats")
+setwd("/projects/standard/mnievesc/shared/projects/PIALQ/2025_ancient_lp/02_circmap/seq_stats")
 
 # 3. read in text file
 stats <- read.table("seq_stats.txt", 
