@@ -58,7 +58,7 @@ seqs_l2 <- read_in(l2_path)
 seqs_l3 <- read_in(l3_path)
 
 # 5. load metadata
-meta <- read.csv("/projects/standard/mnievesc/shared/projects/PIALQ/2025_ancient_lp/09_msa/final_cut.meta", sep="\t")
+meta <- read.csv("/projects/standard/mnievesc/shared/projects/PIALQ/2025_ancient_lp/09_msa/all_merged.meta", sep="\t")
 
 # 6. add neanderthal root to the metadata so it's included in all subsets
 ref_rows <- data.frame(
@@ -82,7 +82,8 @@ ref_rows <- data.frame(
   hap_6char = "REF",
   hap_7char = "REF",
   hap_8char = "REF",
-  length = NA
+  length = NA,
+  country_label = "REF"
 )
 
 meta <- rbind(meta, ref_rows)

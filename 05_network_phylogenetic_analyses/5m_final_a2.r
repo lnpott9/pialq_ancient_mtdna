@@ -231,6 +231,6 @@ final_clade <- clade_plot +
 # save plots
 library(gridExtra)
 
-pdf("final_a2.pdf", width = 20, height = 10)
+svg("final_a2.svg", width = 20, height = 10)
 grid.arrange(final_full, final_clade, ncol = 2)
 dev.off()

@@ -184,6 +184,6 @@ final_clade <- full +
              size = 1.5, color = "red", hjust = 0.1, vjust = 0.0)
 
 # save plots
-pdf("final_b2b.pdf", width = 11, height = 8)
+svg("final_b2b.svg", width = 11, height = 8)
 final_clade
 dev.off()

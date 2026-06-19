@@ -185,6 +185,6 @@ final_clade <- full +
 
 # save plots
 
-pdf("final_h1bw.pdf", width = 11, height = 8)
+svg("final_h1bw.svg", width = 11, height = 8)
 final_clade
 dev.off()

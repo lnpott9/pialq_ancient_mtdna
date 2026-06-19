@@ -185,6 +185,6 @@ final_clade <- full +
 # save plots
 library(gridExtra)
 
-cairo_pdf("final_l2b1.pdf", width = 11, height = 8)
+cairo_svg("final_l2b1.svg", width = 11, height = 8)
 grid.arrange(final_clade, ncol = 1)
 dev.off()
