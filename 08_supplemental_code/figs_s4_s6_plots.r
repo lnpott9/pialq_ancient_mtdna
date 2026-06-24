@@ -47,12 +47,11 @@ scatter <- ggplot(join, aes(x=Mean.cov..X., y=Quality)) +
   xlab("Mean Depth (X)") +
   ylab("Haplogrep Quality (based on 5X VCF)")
 
-# 6. print to svg
-svg("fig_s4_hist.svg")
+# 6. print to pdf
+svg("fig_s4_hist.svg", width = 20, height = 5)
 hist
 dev.off()
 
 svg("fig_s6_scatter.svg")
 scatter
 dev.off()
-
