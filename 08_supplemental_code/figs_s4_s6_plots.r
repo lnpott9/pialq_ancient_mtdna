@@ -8,12 +8,13 @@
 
 # 1. load libraries
 library(ggplot2)
+library(dplyr)
 
 # 2. setwd
 setwd("/projects/standard/mnievesc/shared/projects/PIALQ/2025_ancient_lp/02_circmap/seq_stats")
 
 # 3. read in text file
-stats <- read.table("seq_stats.txt", 
+stats <- read.table("table_s8.txt", 
                     header = TRUE,
                     sep = "\t", # tab
                     quote = "", # Ignore quotes
@@ -21,14 +22,27 @@ stats <- read.table("seq_stats.txt",
                     stringsAsFactors = FALSE)
 
 # 4. histogram
-hist <- ggplot(stats, aes(x=cov_mean)) + 
-  geom_histogram(binwidth = 20, color = "black", fill = "green") +
-  scale_x_continuous(breaks = seq(0,350, by=20)) +
+stats$Mean.cov..X. <- as.numeric(gsub(",", "", stats$Mean.cov..X.))
+
+hist <- ggplot(stats, aes(x=Mean.cov..X.)) + 
+  geom_histogram(binwidth = 100, color = "black", fill = "green") +
+  scale_x_continuous(breaks = seq(0,3800, by=100)) +
   xlab("Mean Depth (X)") +
   ylab("Library Count")
-  
+
 # 5. graph of haplogrep quality vs coverage
-scatter <- ggplot(stats, aes(x=cov_mean, y=Quality_5x)) +
+graph <- read.table("table_s10_5x.txt", 
+                    header = TRUE,
+                    sep = "\t", # tab
+                    quote = "", # Ignore quotes
+                    fill = TRUE, # Fill missing columns
+                    stringsAsFactors = FALSE)
+
+stats$Sample.Name <- gsub("\\.mt$", "", stats$Sample.Name)
+
+join <- left_join(stats, graph, by = c("Sample.Name" = "Library"))
+
+scatter <- ggplot(join, aes(x=Mean.cov..X., y=Quality)) +
   geom_point() +
   xlab("Mean Depth (X)") +
   ylab("Haplogrep Quality (based on 5X VCF)")
